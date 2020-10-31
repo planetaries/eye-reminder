@@ -1,14 +1,13 @@
 {
-  "name": "Getting Started Example",
+  "name": "eye reminder",
   "version": "1.0",
-  "description": "Build an Extension!",
-  "permissions": ["activeTab", "declarativeContent", "storage"],
+  "description": "displays a popup every 20 minutes to remind you to rest your eyes",
+  "permissions": ["activeTab", "alarms", "declarativeContent", "storage"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
   },
-  "options_page": "options.html",
-  "page_action": {
+  "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
       "16": "images/get_started16.png",

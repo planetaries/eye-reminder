@@ -1,21 +1,18 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// Copyright © 2020 planetaries. All rights reserved.
 
 'use strict';
 
-let changeColor = document.getElementById('changeColor');
-
-chrome.storage.sync.get('color', function(data) {
-  changeColor.style.backgroundColor = data.color;
-  changeColor.setAttribute('value', data.color);
+let toggle = document.getElementById('toggleReminders');
+chrome.storage.sync.get('enabled', function(result) {
+  let enabled = result.enabled;
+  toggle.setAttribute('value', enabled ? 'enabled' : 'disabled');
 });
-
-changeColor.onclick = function(element) {
-  let color = element.target.value;
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.executeScript(
-        tabs[0].id,
-        {code: 'document.body.style.backgroundColor = "' + color + '";'});
+toggle.onclick = function(element) {
+  chrome.storage.sync.get('enabled', function(result) {
+    let current = result.enabled;
+    element.target.value = current ? 'disabled' : 'enabled';
+    chrome.storage.sync.set({'enabled' : !current}, function() {
+      chrome.extension.getBackgroundPage().console.log('enabled is set to ' + !current);
+    });
   });
-};
+}

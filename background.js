@@ -1,20 +1,25 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// Copyright © 2020 planetaries. All rights reserved.
 
 'use strict';
 
 chrome.runtime.onInstalled.addListener(function() {
-  chrome.storage.sync.set({color: '#3aa757'}, function() {
-    console.log("The color is green.");
+  chrome.storage.sync.set({'enabled': true}, function() {
+    console.log('enabled initialized to true');
   });
-  chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-    chrome.declarativeContent.onPageChanged.addRules([{
-      conditions: [new chrome.declarativeContent.PageStateMatcher({
-        pageUrl: {hostEquals: 'developer.chrome.com'},
-      })
-      ],
-          actions: [new chrome.declarativeContent.ShowPageAction()]
-    }]);
+  chrome.alarms.create('20min', {
+    delayInMinutes : 20,
+    periodInMinutes : 20
+  });
+  chrome.alarms.onAlarm.addListener(function(alarm) {
+    if (alarm.name === '20min') {
+      chrome.storage.sync.get('enabled', function(result) {
+        let enabled = result.enabled;
+        console.log('20min alarm - enabled=' + enabled);
+        if (enabled) {
+          alert('reminder to rest your eyes! \n'
+            + 'look at something 20 feet away for 20 seconds ♡');
+        }
+      });
+    }
   });
 });
